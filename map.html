@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map | PlantID Iligan</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="icon" type="image/png" href="img/icon.png">
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+        #loading-message {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #555;
+            margin-top: 20px;
+        }
+        body {
+            background-color: #e3f2fd;
+        }
+        .logo {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 300px; /* Set the logo width */
+            height: auto;  /* Maintain aspect ratio */
+        }
+    </style>
+</head>
+<body class="container">
+    <a href="index.html"><img src="img/logo.png" alt="Dashboard Logo" class="logo"></a>
+    <h4 class="mb-4 text-center">Plant Markers Map</h4>
+    <div id="loading-message" style="display: block;">Loading markers... This may take less than a minute when first loaded.</div>
+    <p class="text-center">Pinch to zoom or tap on markers for details.</p>
+    <div id="map" class="my-4"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!-- Bootstrap JS (copied from index.html) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let map, userMarker;
+        
+        // Function to get query parameters (latitude and longitude)
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseFloat(urlParams.get(param));
+        }
+
+        // Function to initialize the map
+        function initializeMap(lat, lng, message = 'You are here') {
+            map = L.map('map').setView([lat, lng], 13);  // Set map center
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            const userIcon = L.icon({
+                iconUrl: 'img/user-location.png',
+                iconSize: [40, 40]  // Larger size
+            });
+
+            userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup(message).openPopup();
+
+            // Fetch plant locations
+            fetchPlantLocations();
+        }
+
+        // Function to fetch user's location
+        function fetchUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        initializeMap(lat, lng, 'You are here');  // Initialize map with user's location
+                    },
+                    error => {
+                        console.error('Error fetching location:', error);
+                        alert('Could not retrieve your location. Default location will be used.');
+                        initializeMap(0, 0);  // Default to (0, 0) if location access is denied or fails
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by this browser.');
+                initializeMap(0, 0);  // Default to (0, 0) if Geolocation is not supported
+            }
+        }
+
+        // Check if we have predicted plant coordinates from the URL
+        const predictedLat = getQueryParam('lat');
+        const predictedLng = getQueryParam('lng');
+
+        if (!isNaN(predictedLat) && !isNaN(predictedLng)) {
+            // If coordinates are passed, use them for the map
+            initializeMap(predictedLat, predictedLng, 'Plant location');  // Use plant's predicted location
+        } else {
+            // If no coordinates are passed, fetch the user's current location
+            fetchUserLocation();
+        }
+
+        async function fetchPlantLocations() {
+            try {
+                const fetchLocationsURL = 'https://plantrecognitionapp-mobile.onrender.com/plant-locations';
+                const response = await fetch(fetchLocationsURL);
+                if (!response.ok) throw new Error('Failed to fetch plant locations');
+                
+                const locations = await response.json();
+
+                // Add markers to the map
+                locations.forEach(location => {
+                    const { className, latitude, longitude, timestamp, image } = location;
+                    const popupContent = `
+                        <strong>${className}</strong><br>
+                        Date and Time taken: ${timestamp}<br>
+                        Location: ${latitude}, ${longitude}<br>
+                        <img src="${image}" alt="${className}" style="width:100px;height:100px;">
+                    `;
+                    L.marker([latitude, longitude]).bindPopup(popupContent).addTo(map);
+                });
+                // Hide the loading message after markers are added
+                document.getElementById("loading-message").style.display = "none";
+            } catch (error) {
+                console.error('Error fetching plant locations:', error);
+                alert('Could not load plant locations.');
+            }
+        }
+    </script>
+</body>
+</html>
