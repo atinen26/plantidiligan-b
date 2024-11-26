@@ -37,6 +37,22 @@
     <h4 class="mb-4 text-center">Plant Markers Map</h4>
     <div id="loading-message" style="display: block;">Loading markers... This may take less than a minute when first loaded.</div>
     <p class="text-center">Pinch to zoom or tap on markers for details.</p>
+    <div class="text-center my-3">
+        <label for="class-filter" class="mr-2">Filter by Class:</label>
+        <select id="class-filter" class="form-control d-inline-block" style="width: auto;">
+            <option value="All">All</option>
+            <option value="Black Gold">Black Gold</option>
+            <option value="Black Prince Rubber Tree">Black Prince Rubber Tree</option>
+            <option value="Chameleon ZZ Plant">Chameleon ZZ Plant</option>
+            <option value="Donkey's Tail">Donkey's Tail</option>
+            <option value="Dwarf Kamuning Plant">Dwarf Kamuning Plant</option>
+            <option value="Fiddle Leaf Fig">Fiddle Leaf Fig</option>
+            <option value="Silver Lady">Silver Lady</option>
+            <option value="Tineke Rubber Tree">Tineke Rubber Tree</option>
+            <option value="Variegated Rhapis">Variegated Rhapis</option>
+            <option value="ZZ Raven">ZZ Raven</option>
+        </select>
+    </div>
     <div id="map" class="my-4"></div>
 
     <!-- Leaflet JS -->
@@ -48,6 +64,8 @@
 
     <script>
         let map, userMarker;
+        let allLocations = [];
+        let activeMarkers = [];
         
         // Function to get query parameters (latitude and longitude)
         function getQueryParam(param) {
@@ -112,19 +130,9 @@
                 const response = await fetch(fetchLocationsURL);
                 if (!response.ok) throw new Error('Failed to fetch plant locations');
                 
-                const locations = await response.json();
+                allLocations = await response.json();  // Store all locations globally
+                updateMarkers("All");
 
-                // Add markers to the map
-                locations.forEach(location => {
-                    const { className, latitude, longitude, timestamp, image } = location;
-                    const popupContent = `
-                        <strong>${className}</strong><br>
-                        Date and Time taken: ${timestamp}<br>
-                        Location: ${latitude}, ${longitude}<br>
-                        <img src="${image}" alt="${className}" style="width:100px;height:100px;">
-                    `;
-                    L.marker([latitude, longitude]).bindPopup(popupContent).addTo(map);
-                });
                 // Hide the loading message after markers are added
                 document.getElementById("loading-message").style.display = "none";
             } catch (error) {
@@ -132,6 +140,31 @@
                 alert('Could not load plant locations.');
             }
         }
+
+        function updateMarkers(selectedClass) {
+            // Clear current markers from the map
+            activeMarkers.forEach(marker => map.removeLayer(marker));
+            activeMarkers = [];
+        
+            // Add markers that match the selected class
+            allLocations.forEach(location => {
+                if (selectedClass === "All" || location.className === selectedClass) {
+                    const { className, latitude, longitude, timestamp, image } = location;
+                    const popupContent = `
+                        <strong>${className}</strong><br>
+                        Date and Time taken: ${timestamp}<br>
+                        Location: ${latitude}, ${longitude}<br>
+                        <img src="${image}" alt="${className}" style="width:100px;height:100px;">
+                    `;
+                    const marker = L.marker([latitude, longitude]).bindPopup(popupContent).addTo(map);
+                    activeMarkers.push(marker);
+                }
+            });
+        }
+        document.getElementById("class-filter").addEventListener("change", (event) => {
+            const selectedClass = event.target.value;  // Get selected class
+            updateMarkers(selectedClass);  // Update markers
+        });
     </script>
 </body>
 </html>
