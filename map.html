@@ -81,7 +81,7 @@
         }
 
         // Get filter from query parameters
-        const filterClass = getQueryParam("filter");
+        const filterClass = getQueryParam("filter") || "All";
 
         // Function to initialize the map
         function initializeMap(lat, lng, message = 'You are here') {
@@ -141,7 +141,7 @@
                 if (!response.ok) throw new Error('Failed to fetch plant locations');
                 
                 allLocations = await response.json();  // Store all locations globally
-                updateMarkers("All");
+                updateMarkers(filterClass);
 
                 // Hide the loading message after markers are added
                 document.getElementById("loading-message").style.display = "none";
