@@ -80,6 +80,9 @@
             return parseFloat(urlParams.get(param));
         }
 
+        // Get filter from query parameters
+        const filterClass = getQueryParam("filter");
+
         // Function to initialize the map
         function initializeMap(lat, lng, message = 'You are here') {
             map = L.map('map').setView([lat, lng], 13);  // Set map center
