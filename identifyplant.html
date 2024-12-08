@@ -212,7 +212,7 @@
             const details = document.getElementById("details");
             const description = plantDescriptions[className] || "Description not available.";
 	    // Create a Google Maps link using the coordinates
-	    const mapsLink = `map.html?lat=${latitude}&lng=${longitude}`;
+	    const mapsLink = `map.html?lat=${latitude}&lng=${longitude}&filter=${encodeURIComponent(className)}`;
             details.innerHTML = `
                 <p><strong>Common Name:</strong> ${className} (${accuracyPercentage}%)</p>
                 <p><strong>Description:</strong> ${description}</p>
