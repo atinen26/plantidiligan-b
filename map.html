@@ -128,16 +128,16 @@
         }
 
         // Check if we have predicted plant coordinates from the URL
-        const predictedLat = getQueryParam('lat');
-        const predictedLng = getQueryParam('lng');
+        // const predictedLat = getQueryParam('lat');
+        // const predictedLng = getQueryParam('lng');
 
-        if (!isNaN(predictedLat) && !isNaN(predictedLng)) {
-            // If coordinates are passed, use them for the map
-            initializeMap(predictedLat, predictedLng, 'Plant location');  // Use plant's predicted location
-        } else {
-            // If no coordinates are passed, fetch the user's current location
-            fetchUserLocation();
-        }
+        // if (!isNaN(predictedLat) && !isNaN(predictedLng)) {
+        //     // If coordinates are passed, use them for the map
+        //     initializeMap(predictedLat, predictedLng, 'Plant location');  // Use plant's predicted location
+        // } else {
+        //     // If no coordinates are passed, fetch the user's current location
+        //     fetchUserLocation();
+        // }
 
         async function fetchPlantLocations(filterClass, map) {
             try {
@@ -157,9 +157,7 @@
         }
 
         function updateMarkers(filterClass, locations, map) {
-            // Clear current markers from the map
-            activeMarkers.forEach(marker => map.removeLayer(marker));
-            activeMarkers = [];
+            markerLayer.clearLayers();
         
             // Add markers that match the selected class
             locations.forEach(location => {
