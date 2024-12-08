@@ -85,10 +85,6 @@
 
         // Function to initialize the map
         function initializeMap(lat, lng, filterClass) {
-            // Check if the map already exists and remove it
-            if (map) {
-                map.remove(); // Removes the map instance and clears the container
-            }
             
             map = L.map('map').setView([lat, lng], 13);  // Set map center
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
