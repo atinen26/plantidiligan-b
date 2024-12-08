@@ -84,8 +84,8 @@
         const filterClass = getQueryParam("filter") || "All";
 
         // Function to initialize the map
-        function initializeMap(lat, lng, message = 'You are here') {
-            map = L.map('map').setView([lat, lng], 13);  // Set map center
+        function initializeMap(lat, lng, filterClass) {
+            const map = L.map('map').setView([lat, lng], 13);  // Set map center
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
@@ -95,20 +95,20 @@
                 iconSize: [40, 40]  // Larger size
             });
 
-            userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup(message).openPopup();
+            const userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup("You are here").openPopup();
 
             // Fetch plant locations
-            fetchPlantLocations();
+            fetchPlantLocations(filterClass, map);
         }
 
         // Function to fetch user's location
-        function fetchUserLocation() {
+        function fetchUserLocation(filterClass) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     position => {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        initializeMap(lat, lng, 'You are here');  // Initialize map with user's location
+                        initializeMap(lat, lng, filterClass);  // Initialize map with user's location
                     },
                     error => {
                         console.error('Error fetching location:', error);
@@ -134,14 +134,14 @@
             fetchUserLocation();
         }
 
-        async function fetchPlantLocations(filterClass) {
+        async function fetchPlantLocations(filterClass, map) {
             try {
                 const fetchLocationsURL = 'https://plantidiligan-b.onrender.com/plant-locations';
                 const response = await fetch(fetchLocationsURL);
                 if (!response.ok) throw new Error('Failed to fetch plant locations');
                 
-                allLocations = await response.json();  // Store all locations globally
-                updateMarkers(filterClass);
+                const locations = await response.json();  // Store all locations globally
+                updateMarkers(filterClass, locations, map);
 
                 // Hide the loading message after markers are added
                 document.getElementById("loading-message").style.display = "none";
@@ -151,14 +151,14 @@
             }
         }
 
-        function updateMarkers(selectedClass) {
+        function updateMarkers(filterClass, locations, map) {
             // Clear current markers from the map
             activeMarkers.forEach(marker => map.removeLayer(marker));
             activeMarkers = [];
         
             // Add markers that match the selected class
-            allLocations.forEach(location => {
-                if (selectedClass === "All" || location.className === selectedClass) {
+            locations.forEach(location => {
+                if (filterClass === "All" || location.className === filterClass) {
                     const { className, latitude, longitude, timestamp, image } = location;
                     const popupContent = `
                         <strong>${className}</strong><br>
@@ -177,14 +177,22 @@
         });
         
         document.addEventListener("DOMContentLoaded", () => {
-            const filterClass = getQueryParam("filter") || "All"; // Get the filter parameter or default to "All"
             const classFilterDropdown = document.getElementById("class-filter");
+            const filterClass = getQueryParam("filter") || "All"; // Get the filter parameter or default to "All"
+            const lat = parseFloat(getQueryParam("lat")); // Latitude from query parameter
+            const lng = parseFloat(getQueryParam("lng")); // Longitude from query parameter
         
             // Set the dropdown to the filtered class
             classFilterDropdown.value = filterClass;
         
-            // Fetch and display markers based on the filter
-            fetchPlantLocations(filterClass);
+            // Check if latitude and longitude are provided
+            if (!isNaN(lat) && !isNaN(lng)) {
+                // Initialize map using the provided coordinates
+                initializeMap(lat, lng, filterClass);
+            } else {
+                // Use user's current location if no coordinates are passed
+                fetchUserLocation(filterClass);
+            }
         
             // Add event listener for dropdown changes
             classFilterDropdown.addEventListener("change", (event) => {
