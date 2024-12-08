@@ -210,7 +210,6 @@
         function displayDetails(className, timestamp, latitude, longitude) {
 	    console.log("displayDetails called with:", { className, timestamp, latitude, longitude});
             const details = document.getElementById("details");
-	    const accuracyPercentage = (bestPrediction.probability * 100).toFixed(2); // Calculate accuracy as a percentage
             const description = plantDescriptions[className] || "Description not available.";
 	    // Create a Google Maps link using the coordinates
 	    const mapsLink = `map.html?lat=${latitude}&lng=${longitude}`;
@@ -320,6 +319,7 @@
 	            if (bestPrediction) {
 			isPredicting = false;
 			const className = bestPrediction.className;
+			const accuracyPercentage = (bestPrediction.probability * 100).toFixed(2); // Calculate accuracy as a percentage
 
 	                // If it's a non-plant object, show a warning message
 	                if (className === "Non-Plant Object") {
