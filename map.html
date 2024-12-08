@@ -85,6 +85,10 @@
 
         // Function to initialize the map
         function initializeMap(lat, lng, filterClass) {
+            // Check if a map instance already exists
+            if (map) {
+                map.remove(); // Remove the existing map instance
+            }
             
             map = L.map('map').setView([lat, lng], 13);  // Set map center
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -172,10 +176,10 @@
                 }
             });
         }
-        document.getElementById("class-filter").addEventListener("change", (event) => {
-            const selectedClass = event.target.value;  // Get selected class
-            updateMarkers(selectedClass);  // Update markers
-        });
+        // document.getElementById("class-filter").addEventListener("change", (event) => {
+        //     const selectedClass = event.target.value;  // Get selected class
+        //     updateMarkers(selectedClass);  // Update markers
+        // });
         
         document.addEventListener("DOMContentLoaded", () => {
             const classFilterDropdown = document.getElementById("class-filter");
