@@ -207,7 +207,7 @@
 	}
 
         // Display class name, description, date & time, coordinates
-        function displayDetails(className, timestamp, latitude, longitude) {
+        function displayDetails(className, accuracyPercentage, timestamp, latitude, longitude) {
 	    console.log("displayDetails called with:", { className, timestamp, latitude, longitude});
             const details = document.getElementById("details");
             const description = plantDescriptions[className] || "Description not available.";
@@ -343,7 +343,7 @@
 			// Hide loading message after prediction is done
                 	document.getElementById("loading-message").style.display = "none";
 	                // Display prediction details
-	                displayDetails(className, timestamp, latitude, longitude, "details");
+	                displayDetails(className, accuracyPercentage, timestamp, latitude, longitude, "details");
 	                
 	                // Prepare the data to be saved but do not save yet
 	                scanDataToSave = { className, timestamp, latitude, longitude, image };
