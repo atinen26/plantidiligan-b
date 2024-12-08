@@ -214,7 +214,7 @@
 	    // Create a Google Maps link using the coordinates
 	    const mapsLink = `map.html?lat=${latitude}&lng=${longitude}`;
             details.innerHTML = `
-                <p><strong>Common Name:</strong> ${className}</p>
+                <p><strong>Common Name:</strong> ${className} (${accuracyPercentage}%)</p>
                 <p><strong>Description:</strong> ${description}</p>
                 <p><strong>Date & Time:</strong> ${timestamp}</p>
                 <p><strong>Plant Location:</strong>
@@ -319,6 +319,7 @@
 	            if (bestPrediction) {
 			isPredicting = false;
 			const className = bestPrediction.className;
+			const accuracyPercentage = (bestPrediction.probability * 100).toFixed(2); // Calculate accuracy as a percentage
 
 	                // If it's a non-plant object, show a warning message
 	                if (className === "Non-Plant Object") {
