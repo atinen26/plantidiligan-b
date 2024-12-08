@@ -118,12 +118,12 @@
                     error => {
                         console.error('Error fetching location:', error);
                         alert('Could not retrieve your location. Default location will be used.');
-                        initializeMap(0, 0);  // Default to (0, 0) if location access is denied or fails
+                        initializeMap(0, 0, filterClass);  // Default to (0, 0) if location access is denied or fails
                     }
                 );
             } else {
                 alert('Geolocation is not supported by this browser.');
-                initializeMap(0, 0);  // Default to (0, 0) if Geolocation is not supported
+                initializeMap(0, 0, filterClass);  // Default to (0, 0) if Geolocation is not supported
             }
         }
 
