@@ -162,16 +162,35 @@
         }
 
         function updateMarkers(filterClass, locations) {
-            // Validate that locations is a valid array
-            if (!Array.isArray(locations)) {
-                console.error("Error: locations is not an array or undefined", locations);
-                return; // Stop execution if locations is invalid
-            }
-            if (locations.length === 0) {
-                console.warn("No locations available to display.");
+            if (!Array.isArray(locations) || locations.length === 0) {
+                console.warn("No valid locations to display.");
                 return;
             }
             markerLayer.clearLayers();
+
+            // Group locations by proximity
+            const groupedLocations = groupLocationsByProximity(locations);
+            groupedLocations.forEach(group => {
+                // Check if the group's locations match the filter
+                const filteredGroup = group.filter(location => filterClass === "All" || location.className === filterClass);
+        
+                if (filteredGroup.length > 0) {
+                    // Use the first location's coordinates for the marker
+                    const { latitude, longitude } = filteredGroup[0];
+        
+                    // Combine the data for all locations in the group
+                    const popupContent = filteredGroup.map(location => `
+                        <strong>${location.className}</strong><br>
+                        Date and Time taken: ${location.timestamp}<br>
+                        Location: ${location.latitude}, ${location.longitude}<br>
+                        <img src="${location.image}" alt="${location.className}" style="width:100px;height:100px;"><br><br>
+                    `).join("");
+        
+                    // Create a marker for the group
+                    const marker = L.marker([latitude, longitude]).bindPopup(popupContent);
+                    markerLayer.addLayer(marker); // Add the marker to the map
+                }
+            });
 
             let markersAdded = 0;
             // Add markers that match the selected class
@@ -230,6 +249,25 @@
                 updateMarkers(selectedClass);
             });
         });
+
+        function groupLocationsByProximity(locations) {
+            const groups = {};
+        
+            locations.forEach(location => {
+                // Round latitude and longitude to 5 decimal places for grouping
+                const latKey = location.latitude.toFixed(5);
+                const lngKey = location.longitude.toFixed(5);
+                const key = `${latKey},${lngKey}`;
+        
+                if (!groups[key]) {
+                    groups[key] = []; // Create a new group if it doesn't exist
+                }
+        
+                groups[key].push(location); // Add the location to the group
+            });
+        
+            return Object.values(groups); // Return an array of grouped locations
+        }
     </script>
 </body>
 </html>
