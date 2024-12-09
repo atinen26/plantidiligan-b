@@ -275,8 +275,8 @@
         
             locations.forEach(location => {
                 // Round latitude and longitude to 5 decimal places for grouping
-                const latKey = location.latitude.toFixed(4);
-                const lngKey = location.longitude.toFixed(4);
+                const latKey = location.latitude.toFixed(3);
+                const lngKey = location.longitude.toFixed(3);
                 const key = `${latKey},${lngKey}`;
         
                 if (!groups[key]) {
