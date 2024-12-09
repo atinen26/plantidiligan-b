@@ -73,6 +73,7 @@
         let map, userMarker;
         let allLocations = [];
         let activeMarkers = [];
+        let markerLayer = L.layerGroup();
         
         // Function to get query parameters (latitude and longitude)
         function getQueryParam(param) {
@@ -87,6 +88,7 @@
         function initializeMap(lat, lng, filterClass) {
             // Check if a map instance already exists
             if (map) {
+                map.off();
                 map.remove(); // Remove the existing map instance
             }
             
@@ -95,6 +97,7 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
+            markerLayer = L.layerGroup().addTo(map);
             const userIcon = L.icon({
                 iconUrl: 'img/user-location.png',
                 iconSize: [40, 40]  // Larger size
@@ -156,7 +159,7 @@
             }
         }
 
-        function updateMarkers(filterClass, locations, map) {
+        function updateMarkers(filterClass, locations) {
             markerLayer.clearLayers();
         
             // Add markers that match the selected class
@@ -170,14 +173,14 @@
                         <img src="${image}" alt="${className}" style="width:100px;height:100px;">
                     `;
                     const marker = L.marker([latitude, longitude]).bindPopup(popupContent).addTo(map);
-                    activeMarkers.push(marker);
+                    markerLayer.addLayer(marker);
                 }
             });
         }
-        // document.getElementById("class-filter").addEventListener("change", (event) => {
-        //     const selectedClass = event.target.value;  // Get selected class
-        //     updateMarkers(selectedClass);  // Update markers
-        // });
+        document.getElementById("class-filter").addEventListener("change", (event) => {
+            const selectedClass = event.target.value;  // Get selected class
+            updateMarkers(selectedClass, allLocations);  // Update markers
+        });
         
         document.addEventListener("DOMContentLoaded", () => {
             const classFilterDropdown = document.getElementById("class-filter");
