@@ -200,20 +200,6 @@
                 }
             });
 
-            function generatePopupContent(group) {
-                // Generate combined content for the group's popup
-                return `
-                    <div class="popup-content">
-                        ${group.map(location => `
-                            <strong>${location.className}</strong><br>
-                            Date and Time taken: ${location.timestamp}<br>
-                            Location: ${location.latitude}, ${location.longitude}<br>
-                            <img src="${location.image}" alt="${location.className}" style="width:100px;height:100px;"><br><br>
-                        `).join('')}
-                    </div>
-                `;
-            }
-
             let markersAdded = 0;
             // Add markers that match the selected class
             locations.forEach(location => {
@@ -234,6 +220,21 @@
                 console.warn("No markers matched the selected filter.");
             }
         }
+
+        function generatePopupContent(group) {
+            // Generate combined content for the group's popup
+            return `
+                <div class="popup-content">
+                    ${group.map(location => `
+                        <strong>${location.className}</strong><br>
+                        Date and Time taken: ${location.timestamp}<br>
+                        Location: ${location.latitude}, ${location.longitude}<br>
+                        <img src="${location.image}" alt="${location.className}" style="width:100px;height:100px;"><br><br>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
         document.getElementById("class-filter").addEventListener("change", (event) => {
             const selectedClass = event.target.value;  // Get selected class
             // Check if `allLocations` is populated
