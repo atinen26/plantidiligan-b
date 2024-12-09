@@ -74,6 +74,7 @@
         let allLocations = [];
         let activeMarkers = [];
         let markerLayer = L.layerGroup();
+        let locations = [];
         
         // Function to get query parameters (latitude and longitude)
         function getQueryParam(param) {
@@ -160,6 +161,18 @@
                 alert('Could not load plant locations.');
             }
         }
+
+        fetch('/api/locations') // Example
+           .then(response => response.json())
+           .then(data => {
+               locations = data; // Assign the fetched data
+               updateMarkers();  // Call your function AFTER data is available
+           })
+           .catch(error => {
+               console.error("Error fetching locations:", error);
+               // Handle the error gracefully, perhaps display a message to the user
+               //  Instead of just returning, you may want to show an appropriate message on the map or UI
+        });
 
         function updateMarkers(filterClass, locations) {
             if (!Array.isArray(locations) || locations.length === 0) {
