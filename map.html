@@ -223,16 +223,28 @@
 
         function generatePopupContent(group) {
             return `
-                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-                    ${group.map(location => `
-                        <div style="display: flex; flex-direction: column; align-items: center; border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
-                            <strong>${location.className}</strong>
-                            <span>Date: ${location.timestamp}</span>
-                            <span>Lat, Lng: ${location.latitude}, ${location.longitude}</span>
-                            <img src="${location.image}" alt="${location.className}" style="width: 100px; height: auto; margin-top: 10px;">
-                        </div>
-                    `).join('')}
-                </div>
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #ccc; padding: 8px;">Class Name</th>
+                            <th style="border: 1px solid #ccc; padding: 8px;">Date & Time</th>
+                            <th style="border: 1px solid #ccc; padding: 8px;">Coordinates</th>
+                            <th style="border: 1px solid #ccc; padding: 8px;">Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${group.map(location => `
+                            <tr>
+                                <td style="border: 1px solid #ccc; padding: 8px;">${location.className}</td>
+                                <td style="border: 1px solid #ccc; padding: 8px;">${location.timestamp}</td>
+                                <td style="border: 1px solid #ccc; padding: 8px;">${location.latitude}, ${location.longitude}</td>
+                                <td style="border: 1px solid #ccc; padding: 8px;">
+                                    <img src="${location.image}" alt="${location.className}" style="width: 100px; height: auto;">
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             `;
         }
         
