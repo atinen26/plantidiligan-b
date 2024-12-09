@@ -186,14 +186,21 @@
                     markersAdded++;
                 }
             });
-                if (markersAdded === 0) {
-                    console.warn("No markers matched the selected filter.");
-                    alert("No plant locations matched the selected filter.");
-                }
+            if (markersAdded === 0) {
+                console.warn("No markers matched the selected filter.");
+                alert("No plant locations matched the selected filter.");
+            }
         }
         document.getElementById("class-filter").addEventListener("change", (event) => {
             const selectedClass = event.target.value;  // Get selected class
+            // Check if `allLocations` is populated
+            if (!Array.isArray(allLocations) || allLocations.length === 0) {
+                console.warn("allLocations is not yet ready. Skipping update.");
+                return; // Skip updating markers until data is available
+            }
             console.log("Selected class filter:", selectedClass);
+            console.log("Initializing map with filter class:", filterClass);
+            console.log("All locations at the time of update:", allLocations);
             updateMarkers(selectedClass, allLocations);  // Update markers
         });
         
