@@ -162,11 +162,6 @@
         }
 
         function updateMarkers(filterClass, locations) {
-            if (!Array.isArray(locations) || locations.length === 0) {
-                console.warn("No valid locations to display.");
-                alert("No plant locations found.");
-                return;
-            }
             console.log("Filtering locations for class:", filterClass);
             markerLayer.clearLayers();
 
