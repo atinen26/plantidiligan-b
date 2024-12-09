@@ -150,8 +150,9 @@
                 if (!response.ok) throw new Error('Failed to fetch plant locations');
                 
                 const locations = await response.json();  // Store all locations globally
+                allLocations = locations;
                 console.log("Fetched locations:", allLocations);
-                updateMarkers(filterClass, locations);
+                updateMarkers(filterClass, allLocations);
 
                 // Hide the loading message after markers are added
                 document.getElementById("loading-message").style.display = "none";
