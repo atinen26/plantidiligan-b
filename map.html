@@ -142,13 +142,15 @@
         //     fetchUserLocation();
         // }
 
-        async function fetchPlantLocations(filterClass, map) {
+        async function fetchPlantLocations(filterClass) {
             try {
                 const fetchLocationsURL = 'https://plantidiligan-b.onrender.com/plant-locations';
                 const response = await fetch(fetchLocationsURL);
                 if (!response.ok) throw new Error('Failed to fetch plant locations');
                 
                 const locations = await response.json();  // Store all locations globally
+                // Debug the response
+                console.log("Fetched locations:", locations);
                 updateMarkers(filterClass, locations, map);
 
                 // Hide the loading message after markers are added
@@ -160,6 +162,11 @@
         }
 
         function updateMarkers(filterClass, locations) {
+            if (!Array.isArray(locations) || locations.length === 0) {
+                console.warn("No valid locations to display.");
+                alert("No plant locations found.");
+                return;
+            }
             markerLayer.clearLayers();
         
             // Add markers that match the selected class
