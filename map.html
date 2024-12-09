@@ -222,14 +222,15 @@
         }
 
         function generatePopupContent(group) {
-            // Generate combined content for the group's popup
             return `
-                <div class="popup-content">
+                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
                     ${group.map(location => `
-                        <strong>${location.className}</strong><br>
-                        Date and Time taken: ${location.timestamp}<br>
-                        Location: ${location.latitude}, ${location.longitude}<br>
-                        <img src="${location.image}" alt="${location.className}" style="width:100px;height:100px;"><br><br>
+                        <div style="display: flex; flex-direction: column; align-items: center; border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
+                            <strong>${location.className}</strong>
+                            <span>Date: ${location.timestamp}</span>
+                            <span>Lat, Lng: ${location.latitude}, ${location.longitude}</span>
+                            <img src="${location.image}" alt="${location.className}" style="width: 100px; height: auto; margin-top: 10px;">
+                        </div>
                     `).join('')}
                 </div>
             `;
