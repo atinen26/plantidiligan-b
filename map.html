@@ -292,9 +292,9 @@
             const groups = {};
         
             locations.forEach(location => {
-                // Round latitude and longitude to 5 decimal places for grouping
-                const latKey = location.latitude.toFixed(5);
-                const lngKey = location.longitude.toFixed(5);
+                // Round latitude and longitude to 3 decimal places for grouping
+                const latKey = location.latitude.toFixed(3);
+                const lngKey = location.longitude.toFixed(3);
                 const key = `${latKey},${lngKey}`;
         
                 if (!groups[key]) {
