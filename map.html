@@ -200,25 +200,25 @@
                 }
             });
 
-            let markersAdded = 0;
-            // Add markers that match the selected class
-            locations.forEach(location => {
-                if (filterClass === "All" || location.className === filterClass) {
-                    const { className, latitude, longitude, timestamp, image } = location;
-                    const popupContent = `
-                        <strong>${className}</strong><br>
-                        Date and Time taken: ${timestamp}<br>
-                        Location: ${latitude}, ${longitude}<br>
-                        <img src="${image}" alt="${className}" style="width:100px;height:100px;">
-                    `;
-                    const marker = L.marker([latitude, longitude]).bindPopup(popupContent);
-                    markerLayer.addLayer(marker);
-                    markersAdded++;
-                }
-            });
-            if (markersAdded === 0) {
-                console.warn("No markers matched the selected filter.");
-            }
+            // let markersAdded = 0;
+            // // Add markers that match the selected class
+            // locations.forEach(location => {
+            //     if (filterClass === "All" || location.className === filterClass) {
+            //         const { className, latitude, longitude, timestamp, image } = location;
+            //         const popupContent = `
+            //             <strong>${className}</strong><br>
+            //             Date and Time taken: ${timestamp}<br>
+            //             Location: ${latitude}, ${longitude}<br>
+            //             <img src="${image}" alt="${className}" style="width:100px;height:100px;">
+            //         `;
+            //         const marker = L.marker([latitude, longitude]).bindPopup(popupContent);
+            //         markerLayer.addLayer(marker);
+            //         markersAdded++;
+            //     }
+            // });
+            // if (markersAdded === 0) {
+            //     console.warn("No markers matched the selected filter.");
+            // }
         }
 
         function generatePopupContent(group) {
