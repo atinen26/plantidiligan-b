@@ -162,7 +162,15 @@
         }
 
         function updateMarkers(filterClass, locations) {
-            console.log("Filtering locations for class:", filterClass);
+            // Validate that locations is a valid array
+            if (!Array.isArray(locations)) {
+                console.error("Error: locations is not an array or undefined", locations);
+                return; // Stop execution if locations is invalid
+            }
+            if (locations.length === 0) {
+                console.warn("No locations available to display.");
+                return;
+            }
             markerLayer.clearLayers();
 
             let markersAdded = 0;
@@ -183,7 +191,6 @@
             });
             if (markersAdded === 0) {
                 console.warn("No markers matched the selected filter.");
-                alert("No plant locations matched the selected filter.");
             }
         }
         document.getElementById("class-filter").addEventListener("change", (event) => {
