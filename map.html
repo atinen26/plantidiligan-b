@@ -275,27 +275,8 @@ f<!DOCTYPE html>
         
             locations.forEach(location => {
                 // Round latitude and longitude to 5 decimal places for grouping
-                const latKey = location.latitude.toFixed(5);
-                const lngKey = location.longitude.toFixed(5);
-                const key = `${latKey},${lngKey}`;
-        
-                if (!groups[key]) {
-                    groups[key] = []; // Create a new group if it doesn't exist
-                }
-        
-                groups[key].push(location); // Add the location to the group
-            });
-        
-            return Object.values(groups); // Return an array of grouped locations
-        }
-
-        function groupLocationsByProximity(locations) {
-            const groups = {};
-        
-            locations.forEach(location => {
-                // Round latitude and longitude to 4 decimal places for grouping
-                const latKey = location.latitude.toFixed(5);
-                const lngKey = location.longitude.toFixed(5);
+                const latKey = location.latitude.toFixed(4);
+                const lngKey = location.longitude.toFixed(4);
                 const key = `${latKey},${lngKey}`;
         
                 if (!groups[key]) {
