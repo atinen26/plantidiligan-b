@@ -149,9 +149,9 @@
                 if (!response.ok) throw new Error('Failed to fetch plant locations');
                 
                 const locations = await response.json();  // Store all locations globally
-                // Debug the response
-                console.log("Fetched locations:", locations);
-                updateMarkers(filterClass, locations, map);
+                allLocations = locations;
+                console.log("Fetched locations:", allLocations);
+                updateMarkers(filterClass, allLocations);
 
                 // Hide the loading message after markers are added
                 document.getElementById("loading-message").style.display = "none";
@@ -167,8 +167,10 @@
                 alert("No plant locations found.");
                 return;
             }
+            console.log("Filtering locations for class:", filterClass);
             markerLayer.clearLayers();
-        
+
+            let markersAdded = 0;
             // Add markers that match the selected class
             locations.forEach(location => {
                 if (filterClass === "All" || location.className === filterClass) {
@@ -179,13 +181,19 @@
                         Location: ${latitude}, ${longitude}<br>
                         <img src="${image}" alt="${className}" style="width:100px;height:100px;">
                     `;
-                    const marker = L.marker([latitude, longitude]).bindPopup(popupContent).addTo(map);
+                    const marker = L.marker([latitude, longitude]).bindPopup(popupContent);
                     markerLayer.addLayer(marker);
+                    markersAdded++;
                 }
             });
+                if (markersAdded === 0) {
+                    console.warn("No markers matched the selected filter.");
+                    alert("No plant locations matched the selected filter.");
+                }
         }
         document.getElementById("class-filter").addEventListener("change", (event) => {
             const selectedClass = event.target.value;  // Get selected class
+            console.log("Selected class filter:", selectedClass);
             updateMarkers(selectedClass, allLocations);  // Update markers
         });
         
