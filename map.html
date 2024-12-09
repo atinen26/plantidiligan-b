@@ -179,37 +179,38 @@ f<!DOCTYPE html>
                     const { latitude, longitude } = filteredGroup[0];
 
                     // Generate carousel content for the group's popup
-                    const carouselId = `carousel-${latitude.toFixed(5)}-${longitude.toFixed(5)}`.replace('.', '_'); // Unique ID for the carousel
-                    const carouselItems = filteredGroup.map((location, index) => `
-                        <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                            <strong>${location.className}</strong><br>
-                            Date and Time taken: ${location.timestamp}<br>
-                            Location: ${location.latitude}, ${location.longitude}<br>
-                            <img src="${location.image}" alt="${location.className}" style="width:100px;height:100px;">
-                        </div>
-                    `).join("");
+                    // const carouselId = `carousel-${latitude.toFixed(5)}-${longitude.toFixed(5)}`.replace('.', '_'); // Unique ID for the carousel
+                    // const carouselItems = filteredGroup.map((location, index) => `
+                    //     <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                    //         <strong>${location.className}</strong><br>
+                    //         Date and Time taken: ${location.timestamp}<br>
+                    //         Location: ${location.latitude}, ${location.longitude}<br>
+                    //         <img src="${location.image}" alt="${location.className}" style="width:100px;height:100px;">
+                    //     </div>
+                    // `).join("");
                     
-                    const popupContent = `
-                        <div id="carousel-${carouselId}" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner">
-                                ${carouselItems}
-                            </div>
-                            <a class="carousel-control-prev" href="#carousel-${carouselId}" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carousel-${carouselId}" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div>
-                    `;
+                    // Combine data for all locations in the group
+                    const popupContent = generatePopupContent(filteredGroup);
         
                     // Create a marker for the group
                     const marker = L.marker([latitude, longitude]).bindPopup(popupContent);
                     markerLayer.addLayer(marker); // Add the marker to the map
                 }
             });
+
+            function generatePopupContent(group) {
+                // Generate combined content for the group's popup
+                return `
+                    <div class="popup-content">
+                        ${group.map(location => `
+                            <strong>${location.className}</strong><br>
+                            Date and Time taken: ${location.timestamp}<br>
+                            Location: ${location.latitude}, ${location.longitude}<br>
+                            <img src="${location.image}" alt="${location.className}" style="width:100px;height:100px;"><br><br>
+                        `).join('')}
+                    </div>
+                `;
+            }
 
             let markersAdded = 0;
             // Add markers that match the selected class
@@ -274,6 +275,25 @@ f<!DOCTYPE html>
         
             locations.forEach(location => {
                 // Round latitude and longitude to 5 decimal places for grouping
+                const latKey = location.latitude.toFixed(5);
+                const lngKey = location.longitude.toFixed(5);
+                const key = `${latKey},${lngKey}`;
+        
+                if (!groups[key]) {
+                    groups[key] = []; // Create a new group if it doesn't exist
+                }
+        
+                groups[key].push(location); // Add the location to the group
+            });
+        
+            return Object.values(groups); // Return an array of grouped locations
+        }
+
+        function groupLocationsByProximity(locations) {
+            const groups = {};
+        
+            locations.forEach(location => {
+                // Round latitude and longitude to 4 decimal places for grouping
                 const latKey = location.latitude.toFixed(5);
                 const lngKey = location.longitude.toFixed(5);
                 const key = `${latKey},${lngKey}`;
