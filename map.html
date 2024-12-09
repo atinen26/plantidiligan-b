@@ -250,7 +250,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             const classFilterDropdown = document.getElementById("class-filter");
             const filterClass = getQueryParam("filter") || "All"; // Get the filter parameter or default to "All"
-            fetchPlantLocations(filterClass); // Fetch and display grouped markers
             const lat = parseFloat(getQueryParam("lat")); // Latitude from query parameter
             const lng = parseFloat(getQueryParam("lng")); // Longitude from query parameter
         
@@ -271,6 +270,8 @@
                 const selectedClass = event.target.value;
                 updateMarkers(selectedClass);
             });
+
+            fetchPlantLocations(filterClass); // Fetch and display grouped markers
         });
 
         function groupLocationsByProximity(locations) {
