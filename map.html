@@ -37,6 +37,16 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .dynamic-popup .leaflet-popup-content {
+            width: auto;          /* Dynamic width based on table content */
+            max-width: 600px;     /* Optional max width to avoid oversized popups */
+            overflow-x: auto;     /* Allow scrolling for very wide tables */
+            padding: 0;
+        }        
+        td {
+            word-break: break-word;
+            white-space: normal;
+        }
     </style>
 </head>
 <body class="container">
@@ -247,6 +257,11 @@
                 </table>
             `;
         }
+
+        L.popup({ autoPan: true, className: 'dynamic-popup' }) // Flexible popup
+            .setLatLng(latlng)
+            .setContent(generatePopupContent(group))
+            .openOn(map);
         
         document.getElementById("class-filter").addEventListener("change", (event) => {
             const selectedClass = event.target.value;  // Get selected class
