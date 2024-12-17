@@ -207,6 +207,12 @@
 	    isPredicting = false; // Disable prediction for webcam
 	}
 
+	function truncateCoordinates(latitude, longitude) {
+	    const truncatedLat = parseFloat(latitude).toFixed(6); // Limit to 6 decimal places
+	    const truncatedLng = parseFloat(longitude).toFixed(6); // Limit to 6 decimal places
+	    return { latitude: truncatedLat, longitude: truncatedLng };
+	}
+
         // Display class name, description, date & time, coordinates
         function displayDetails(className, confidence, timestamp, latitude, longitude) {
 	    console.log("displayDetails called with:", { className, timestamp, latitude, longitude});
@@ -340,7 +346,8 @@
 	                        hour: '2-digit',
 	                        minute: '2-digit',
 	                        hour12: true
-	                    });	                
+	                    });
+			const { latitude: truncatedLat, longitude: truncatedLng } = truncateCoordinates(latitude, longitude);
 
 			console.log("Prediction completed:", prediction);
 			// Hide loading message after prediction is done
