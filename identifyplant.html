@@ -208,8 +208,8 @@
 	}
 
 	function truncateCoordinates(latitude, longitude) {
-	    const truncatedLat = parseFloat(latitude).toFixed(6); // Limit to 6 decimal places
-	    const truncatedLng = parseFloat(longitude).toFixed(6); // Limit to 6 decimal places
+	    const truncatedLat = parseFloat(parseFloat(latitude).toFixed(6)); // Limit to 6 decimal places
+	    const truncatedLng = parseFloat(parseFloat(longitude).toFixed(6)); // Limit to 6 decimal places
 	    return { latitude: truncatedLat, longitude: truncatedLng };
 	}
 
