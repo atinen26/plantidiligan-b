@@ -356,7 +356,7 @@
 	                displayDetails(className, predictionConfidence, timestamp, latitude, longitude, "details");
 	                
 	                // Prepare the data to be saved but do not save yet
-	                scanDataToSave = { className, timestamp, latitude, longitude, image };
+	                scanDataToSave = { className, timestamp, latitude: truncatedLat, longitude: truncatedLng, image };
 	
 	                // Show the Save button
 	                document.getElementById("save-button").style.display = "inline-block";
